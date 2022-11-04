@@ -1,7 +1,6 @@
-import { url } from 'inspector';
+/* eslint-disable @next/next/no-img-element */
 import { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import { Paper, TextInput, Button, Text, Group } from '@mantine/core';
 import { useState } from 'react';
@@ -13,8 +12,7 @@ const Home: NextPage = () => {
   const [weatherData, setWeatherData] = useState<any>({});
 
   async function getWeatherData() {
-    // https://api.openweathermap.org/data/2.5/weather?q={city}&appid=bac4991441b9590388cc846055864a47
-
+   
     try {
       const serverResponse = await fetch(
         'https://api.openweathermap.org/data/2.5/weather?' +
@@ -22,12 +20,15 @@ const Home: NextPage = () => {
           cityInput +
           '&appid=' +
           API_KEY +
-          '&units=imperial'
+          '&units=metric'
       );
 
       const data = await serverResponse.json()
-      console.log(data)
+ 
+      if (data?.cod === "400") throw data;
 
+      setWeatherData(data); 
+    
     } catch (err) {
       console.log(err);
     }
@@ -41,6 +42,7 @@ const Home: NextPage = () => {
         backgroundImage:
           "url('https://images.pexels.com/photos/3125852/pexels-photo-3125852.jpeg?auto=compress&cs=tinysrgb&w=1600')",
         backgroundSize: 'cover',
+        borderRadius: '15px'
       }}
     >
       <div
@@ -51,7 +53,7 @@ const Home: NextPage = () => {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <Paper withBorder p="lg" style={{ maxWidth: '500px' }}>
+        <Paper withBorder p="lg" style={{ maxWidth: '500px', borderRadius: '15px' }}>
           <Group position="apart">
             <Text size="xl" weight={500}>
               Get The Weather !
@@ -76,6 +78,27 @@ const Home: NextPage = () => {
               Get Weather
             </Button>
           </Group>
+          {Object.keys(weatherData).length != 0 ? 
+          <>
+             <Group position="left">
+                <Text>
+                  {weatherData.name} Weather
+                </Text>
+            </Group>
+            <Group position="left">
+                <img
+                  src={'https://openweathermap.org/img/wn/' + weatherData.weather[0].icon + "@4x.png"}
+                  width="100px"
+                  height="100px"
+                  alt="Icon"
+                />
+                <Text size="lg" weight={500}>
+                  Currently {weatherData.main.temp} &deg;C
+                </Text>
+            </Group>
+          </>
+          : null
+          }
         </Paper>
       </div>
     </div>
