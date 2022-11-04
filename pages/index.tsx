@@ -1,7 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { NextPage } from 'next';
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import { Paper, TextInput, Button, Text, Group } from '@mantine/core';
 import { useState } from 'react';
 
