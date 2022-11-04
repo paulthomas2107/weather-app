@@ -4,8 +4,35 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import { Paper, TextInput, Button, Text, Group } from '@mantine/core';
+import { useState } from 'react';
+
+const API_KEY = 'bac4991441b9590388cc846055864a47';
 
 const Home: NextPage = () => {
+  const [cityInput, setCityInput] = useState('');
+  const [weatherData, setWeatherData] = useState<any>({});
+
+  async function getWeatherData() {
+    // https://api.openweathermap.org/data/2.5/weather?q={city}&appid=bac4991441b9590388cc846055864a47
+
+    try {
+      const serverResponse = await fetch(
+        'https://api.openweathermap.org/data/2.5/weather?' +
+          'q=' +
+          cityInput +
+          '&appid=' +
+          API_KEY +
+          '&units=imperial'
+      );
+
+      const data = await serverResponse.json()
+      console.log(data)
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div
       style={{
@@ -37,10 +64,15 @@ const Home: NextPage = () => {
             <TextInput
               label="City Name"
               placeholder="E.g Manchester"
+              onChange={(e) => setCityInput(e.target.value)}
             ></TextInput>
           </Group>
           <Group position="apart">
-            <Button variant='gradient' size='md'>
+            <Button
+              variant="gradient"
+              size="md"
+              onClick={() => getWeatherData()}
+            >
               Get Weather
             </Button>
           </Group>
